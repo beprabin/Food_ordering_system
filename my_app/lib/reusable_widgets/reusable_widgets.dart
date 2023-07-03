@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:my_app/packages.dart';
 
 Image logoWidget(String imageName) {
   return Image.asset(
@@ -97,4 +97,81 @@ Container firebaseUIButton(BuildContext context, String title, Function onTap) {
       ),
     ),
   );
+}
+
+Widget foodListWidget(BuildContext context, DocumentSnapshot document) {
+  return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            width: 380,
+            height: 280,
+            decoration: BoxDecoration(
+                color: Colors.amberAccent,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 10,
+                      offset: Offset(0, 3))
+                ]),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                children: [
+                  Container(
+                    child: FadeInImage.assetNetwork(
+                      placeholder: 'assets/images/loading.png',
+                      image: "${document['image']}",
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
+                      height: 170,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.25,
+                        top: 10),
+                    child: Row(
+                      children: [
+                        Text(document['name'],
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text("    Rs. ${document['price']}",
+                            style: TextStyle(
+                                fontSize: 15, fontStyle: FontStyle.italic)),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: firebaseUIButton(context, "Add to cart", () async {
+                      FirebaseFirestore.instance
+                          .collection('CartItems')
+                          .doc()
+                          .set({
+                        'name': document['name'],
+                        'image': document['image'],
+                        'price': document['price'],
+                        'plates': 1
+                      }).then((value) {
+                        // setState(() {
+                        //   // errorMsg = "New Food item added to list";
+                        // });
+                      }).onError((error, stackTrace) {
+                        // setState(() {
+                        //   // errorMsg = "something wrong.";
+                        // });
+                      });
+                    }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ));
 }

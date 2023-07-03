@@ -33,6 +33,10 @@ class _AppBarWidgetState extends State<AppBarWidget> {
             child: Icon(CupertinoIcons.bars),
           ),
         ),
+        Text(
+          "FOS",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
         InkWell(
           onTap: () {},
           child: Container(

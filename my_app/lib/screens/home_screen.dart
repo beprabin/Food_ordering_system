@@ -1,46 +1,84 @@
 import 'package:flutter/cupertino.dart';
 import 'package:my_app/packages.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool isHomeScreenVisible = true;
+  bool isCartPageVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.amber,
-      body: ListView(
+      body: Stack(
         children: [
-          //App widget
-          AppBarWidget(),
+          Visibility(
+            visible: isHomeScreenVisible,
+            child: ListView(
+              children: [
+                //App widget
+                AppBarWidget(),
+                //Categories
+                // Padding(
+                //   padding: EdgeInsets.only(
+                //     top: 20,
+                //     left: 20,
+                //   ),
+                //   child: Text(
+                //     "Categories",
+                //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                //   ),
+                // ),
+                //Categories widget
+                CategoriesWidget(),
+                //Food Items
+                Center(
+                  // padding: EdgeInsets.only(
+                  //   top: 20,
+                  //   left: 180,
+                  // ),
+                  child: Text(
+                    "Our Menus",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                ),
 
-          //Categories
-          Padding(
-            padding: EdgeInsets.only(
-              top: 20,
-              left: 20,
-            ),
-            child: Text(
-              "Categories",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                SingleChildScrollView(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.81,
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('Foods')
+                          .snapshots(),
+                      builder: ((context,
+                          AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                        if (!streamSnapshot.hasData)
+                          return const Text('Loading...');
+                        return ListView.builder(
+                          itemCount: streamSnapshot.data?.docs.length,
+                          itemBuilder: (context, index) {
+                            final DocumentSnapshot documentSnapshot =
+                                streamSnapshot.data!.docs[index];
+                            return foodListWidget(context, documentSnapshot);
+                          },
+                        );
+                      }),
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
-
-          //Categories widget
-          CategoriesWidget(),
-
-          //Food Items
-          Padding(
-            padding: EdgeInsets.only(
-              top: 20,
-              left: 180,
-            ),
-            child: Text(
-              "Our Menus",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-          ),
-          FoodListWidget(),
+          Visibility(visible: isCartPageVisible, child: CartPage())
         ],
       ),
       drawer: DrawerWidget(),
+
+      //Cartpage
       floatingActionButton: Container(
         decoration:
             BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: [
@@ -52,7 +90,21 @@ class HomeScreen extends StatelessWidget {
         ]),
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, "cartPage");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CartPage()),
+            );
+            // if (isCartPageVisible == true) {
+            //   setState(() {
+            //     isHomeScreenVisible = true;
+            //     isCartPageVisible = false;
+            //   });
+            // } else {
+            //   setState(() {
+            //     isHomeScreenVisible = false;
+            //     isCartPageVisible = true;
+            //   });
+            // }
           },
           child: Icon(
             CupertinoIcons.cart,
@@ -61,6 +113,8 @@ class HomeScreen extends StatelessWidget {
           ),
           backgroundColor: Colors.amber,
         ),
+
+        //end cartpage
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:my_app/Pages/orderPage.dart';
 import 'package:my_app/packages.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -15,21 +16,67 @@ class _DrawerWidgetState extends State<DrawerWidget> {
       backgroundColor: Colors.amber,
       child: ListView(children: [
         DrawerHeader(
-            padding: EdgeInsets.zero,
-            child: UserAccountsDrawerHeader(
-              accountName: Text("Staff"),
-              accountEmail: Text("staff@gmail.com"),
-              currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/logo.png")),
-            )),
+          child: SingleChildScrollView(
+            child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('staff')
+                        .snapshots(),
+                    builder: ((context,
+                        AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                      if (!streamSnapshot.hasData)
+                        return const Text('Loading...');
+                      return ListView.builder(
+                          itemCount: streamSnapshot.data?.docs.length,
+                          itemBuilder: (context, index) {
+                            final DocumentSnapshot document =
+                                streamSnapshot.data!.docs[index];
+                            var dummymail = document['email'];
+                            return UserAccountsDrawerHeader(
+                              currentAccountPicture: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage("assets/images/gum.jpg")),
+                              accountName: Text("${document['name']}"),
+                              accountEmail: Column(
+                                children: [
+                                  Text(
+                                    "${dummymail.toString().substring(
+                                          5,
+                                        )}",
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
+                    }))),
+            // padding: EdgeInsets.zero,
+            // child: UserAccountsDrawerHeader(
+            //   accountName: Text(""),
+            //   accountEmail: Text("staff@gmail.com"),
+            //   currentAccountPicture: CircleAvatar(
+            //       backgroundImage: AssetImage("assets/images/logo.png")),
+            // )
+          ),
+        ),
         ListTile(
           leading: Icon(
             CupertinoIcons.home,
             color: Colors.white,
           ),
-          title: Text(
-            "Home",
-            style: TextStyle(fontSize: 18, color: Colors.white),
+          title: GestureDetector(
+            onTap: () {
+              setState(() {
+                FirebaseAuth.instance.signOut().then((value) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                });
+              });
+            },
+            child: Text(
+              "Home",
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
           ),
         ),
         ListTile(
@@ -37,9 +84,21 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             CupertinoIcons.cart,
             color: Colors.white,
           ),
-          title: Text(
-            "Orders",
-            style: TextStyle(fontSize: 18, color: Colors.white),
+          title: GestureDetector(
+            onTap: () {
+              setState(() {
+                FirebaseAuth.instance.signOut().then((value) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const OrderPage()));
+                });
+              });
+            },
+            child: Text(
+              "Orders",
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
           ),
         ),
         ListTile(
@@ -47,9 +106,21 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             Icons.logout,
             color: Colors.white,
           ),
-          title: Text(
-            "Logout",
-            style: TextStyle(fontSize: 18, color: Colors.white),
+          title: GestureDetector(
+            onTap: () {
+              setState(() {
+                FirebaseAuth.instance.signOut().then((value) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignInScreen()));
+                });
+              });
+            },
+            child: Text(
+              "Logout",
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
           ),
         )
       ]),
