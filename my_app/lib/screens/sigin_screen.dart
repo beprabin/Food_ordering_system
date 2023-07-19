@@ -24,25 +24,6 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(
-          // child: Column(
-          //   children: [
-          // Center(
-          // child: Padding(
-          //   padding: const EdgeInsets.all(20.0),
-          //   child: Column(
-          //     children: [
-          // Container(
-          //   width: 150,
-          //   height: 150,
-          //   decoration: BoxDecoration(
-          //       image: const DecorationImage(
-          //           image: AssetImage('assets/images/logo.png'),
-          //           fit: BoxFit.cover),
-          //       borderRadius: BorderRadius.circular(100)),
-          // ),
-          //     ]),
-          //   ),
-          // ),
           child: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.fromLTRB(
@@ -74,22 +55,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   const SizedBox(
                     height: 30,
                   ),
-                  // forgetPassword(context),
-                  // firebaseUIButton(context, "Sign In", () {
-                  //   FirebaseAuth.instance
-                  //       .signInWithEmailAndPassword(
-                  //           email: _emailTextController.text,
-                  //           password: _passwordTextController.text)
-                  //       .then((value) {
-                  //     Navigator.push(
-                  //         context,
-                  //         MaterialPageRoute(
-                  //             builder: (context) => const Navbar()));
-                  //   }).onError((error, stackTrace) {
-                  //     print("Error ${error.toString()}");
-                  //   });
-                  // }),
-
                   firebaseUIButton(context, "Sign in as Staff", () async {
                     try {
                       await FirebaseAuth.instance
@@ -100,6 +65,22 @@ class _SignInScreenState extends State<SignInScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => HomeScreen())));
+                    } on FirebaseAuthException catch (e) {
+                      setState(() {
+                        errorMsg = "Invalid Username or Password";
+                      });
+                    }
+                  }),
+                  firebaseUIButton(context, "Sign in as Chef", () async {
+                    try {
+                      await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: "chef_${_emailTextController.text}",
+                              password: _passwordTextController.text)
+                          .then((value) => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChefLandingScreen())));
                     } on FirebaseAuthException catch (e) {
                       setState(() {
                         errorMsg = "Invalid Username or Password";
@@ -117,7 +98,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           .then((value) => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const AddFoodItem())));
+                                  builder: (context) => const AdminPage())));
                     } on FirebaseAuthException catch (e) {
                       setState(() {
                         errorMsg = "Invalid Username or Password.";
@@ -128,34 +109,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   const SizedBox(
                     height: 5,
                   ),
-                  // GestureDetector(
-                  //   onTap: () async {
-                  //     if (_emailTextController.text.trim() ==
-                  //         'admin@gmail.com') {}
-                  //     try {
-                  //       await FirebaseAuth.instance
-                  //           .signInWithEmailAndPassword(
-                  //               email: _emailTextController.text.trim(),
-                  //               password: _passwordTextController.text.trim())
-                  //           .then((value) => Navigator.push(
-                  //               context,
-                  //               MaterialPageRoute(
-                  //                   builder: (context) =>
-                  //                       const AddFoodItem())));
-                  //     } on FirebaseAuthException catch (e) {
-                  //       setState(() {
-                  //         errorMsg = "Invalid Username or Password.";
-                  //       });
-                  //     }
-                  //   },
-                  //   child: const Text(
-                  //     "Signup as Admin",
-                  //     style: TextStyle(
-                  //         color: Color.fromARGB(255, 0, 0, 0),
-                  //         fontWeight: FontWeight.bold),
-                  //   ),
-                  // ),
-                  signUpOption()
                 ],
               ),
             ),
@@ -167,27 +120,27 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Row signUpOption() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text("Don't have account?",
-            style: TextStyle(color: Color.fromARGB(179, 255, 255, 255))),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const SignUpScreen()));
-          },
-          child: const Text(
-            " Sign Up",
-            style: TextStyle(
-                color: Color.fromARGB(255, 255, 255, 255),
-                fontWeight: FontWeight.bold),
-          ),
-        )
-      ],
-    );
-  }
+  // Row signUpOption() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       const Text("Don't have account?",
+  //           style: TextStyle(color: Color.fromARGB(179, 255, 255, 255))),
+  //       GestureDetector(
+  //         onTap: () {
+  //           Navigator.push(context,
+  //               MaterialPageRoute(builder: (context) => const SignUpScreen()));
+  //         },
+  //         child: const Text(
+  //           " Sign Up",
+  //           style: TextStyle(
+  //               color: Color.fromARGB(255, 255, 255, 255),
+  //               fontWeight: FontWeight.bold),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   // Widget forgetPassword(BuildContext context) {
   //   return Container(

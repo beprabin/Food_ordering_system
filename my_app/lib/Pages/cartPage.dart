@@ -12,7 +12,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  final List<String> items = [
+  final List<String> tablenumber = [
     'Table 1',
     'Table 2',
     'Table 3',
@@ -23,8 +23,10 @@ class _CartPageState extends State<CartPage> {
     'Table 8',
   ];
   // final _db = FirebaseFirestore.instance.collection("CartItems").doc();
-
   String? selectedValue;
+  List<String> items = [];
+  int total = 0;
+  String table = "";
   @override
   Widget build(BuildContext context) {
     return
@@ -72,7 +74,7 @@ class _CartPageState extends State<CartPage> {
                     ),
                   ],
                 ),
-                items: items
+                items: tablenumber
                     .map((String item) => DropdownMenuItem<String>(
                           value: item,
                           child: Text(
@@ -90,6 +92,7 @@ class _CartPageState extends State<CartPage> {
                 onChanged: (String? value) {
                   setState(() {
                     selectedValue = value;
+                    table = selectedValue!;
                   });
                 },
                 buttonStyleData: ButtonStyleData(
@@ -146,11 +149,18 @@ class _CartPageState extends State<CartPage> {
                 builder:
                     ((context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                   if (!streamSnapshot.hasData) return const Text('Loading...');
+                  items.clear();
+                  total = 0;
                   return ListView.builder(
                     itemCount: streamSnapshot.data?.docs.length,
                     itemBuilder: (context, index) {
                       final DocumentSnapshot document =
                           streamSnapshot.data!.docs[index];
+                      //print(streamSnapshot.data!.docs[index].reference);
+                      int qty = document['plates'];
+                      items.add(document['name']);
+                      total += int.parse(document['price']) * qty;
+
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -252,25 +262,14 @@ class _CartPageState extends State<CartPage> {
                                       color: Colors.white,
                                     ),
                                     onTap: () {
-                                      // var abc = _db
-                                      //     .collection("CartItems")
-                                      //     .where('name',
-                                      //         isEqualTo: document['name']);
-
-                                      // FirebaseFirestore.instance
-                                      //     .collection("chats")
-                                      //     .doc(snapshot
-                                      //         .data.documents[index]["id"])
-                                      //     .delete();
-
-                                      // DocumentSnapshot docSnap = _db.get();
-                                      // var doc_id2 =
-                                      //     docSnap.reference.documentID;
-                                      // print(document[index]["id"]);
-                                      // _db.runTransactions((transaction) async =>
-                                      //     await transaction
-                                      //         .delete(DocumentReference));
-                                      // deleteCartItems(index);
+                                      FirebaseFirestore.instance
+                                          .collection("CartItems")
+                                          .doc(document.reference.id)
+                                          .delete();
+                                      items.remove("${document['name']}");
+                                      total =
+                                          total - int.parse(document['price']);
+                                      FLAGS.remove(document['name']);
                                     },
                                   ),
                                 ),
@@ -288,31 +287,57 @@ class _CartPageState extends State<CartPage> {
           //end of cartlistview
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
-            child: firebaseUIButton(context, "Order", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const OrderPage()),
-              );
+            child: firebaseUIButton(context, "Order", () async {
+              if (table != "" && total != 0 && items.isNotEmpty) {
+                flag = true;
+                FirebaseFirestore.instance.collection('allorders').doc().set(
+                    {'name': items, 'totalprice': total, 'tablename': table});
+                var coll = FirebaseFirestore.instance.collection('orders');
+                var snapshots = await coll.get();
+                for (var doc in snapshots.docs) {
+                  await doc.reference.delete();
+                }
+                FirebaseFirestore.instance.collection('orders').doc().set(
+                    {'name': items, 'totalprice': total, 'tablename': table});
+                items.clear();
+                FLAGS.clear();
+                total = 0;
+                var collection =
+                    FirebaseFirestore.instance.collection('CartItems');
+                var snap = await collection.get();
+                for (var doc in snap.docs) {
+                  await doc.reference.delete();
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OrderPage()),
+                );
+              }
             }),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
-            child: firebaseUIButton(context, "Reset", () {}),
+            child: firebaseUIButton(context, "Reset", () async {
+              // FirebaseFirestore.instance.collection('CartItems').delete();
+              items.clear();
+              total = 0;
+              FLAGS.clear();
+              var collection =
+                  FirebaseFirestore.instance.collection('CartItems');
+              var snapshots = await collection.get();
+              for (var doc in snapshots.docs) {
+                await doc.reference.delete();
+              }
+              var coll =
+                  FirebaseFirestore.instance.collection('existingitemcart');
+              var snaps = await coll.get();
+              for (var doc in snaps.docs) {
+                await doc.reference.delete();
+              }
+            }),
           ),
         ],
       ),
     );
   }
 }
-
-Future<void> deleteCol() async {
-  var coll = FirebaseFirestore.instance.collection('CartItems');
-  var snapshots = await coll.get();
-  for (var doc in snapshots.docs) {
-    await doc.reference.delete();
-  }
-}
-
-// void deleteCartItems(int index) {
-//   CartPage.removeAt(index);
-// }

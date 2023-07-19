@@ -34,26 +34,29 @@ class _AppBarWidgetState extends State<AppBarWidget> {
           ),
         ),
         Text(
-          "FOS",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          "Deurali Restaurant",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
         ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                color: Colors.amber,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 10,
-                      offset: Offset(0, 3)),
-                ]),
-            child: Icon(Icons.notifications),
-          ),
+        SizedBox(
+          width: 20,
         )
+        // InkWell(
+        //   onTap: () {},
+        //   child: Container(
+        //     padding: EdgeInsets.all(8),
+        //     decoration: BoxDecoration(
+        //         color: Colors.amber,
+        //         borderRadius: BorderRadius.circular(20),
+        //         boxShadow: [
+        //           BoxShadow(
+        //               color: Colors.grey.withOpacity(0.5),
+        //               spreadRadius: 2,
+        //               blurRadius: 10,
+        //               offset: Offset(0, 3)),
+        //         ]),
+        //     child: Icon(Icons.notifications),
+        //   ),
+        // )
       ]),
     );
   }

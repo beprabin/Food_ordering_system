@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_app/packages.dart';
 import 'package:my_app/screens/sigin_screen.dart';
 import 'package:my_app/reusable_widgets/reusable_widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -73,7 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(
                 height: 20,
               ),
-              firebaseUIButton(context, "Sign Up", () async {
+              firebaseUIButton(context, "Add Staff", () async {
                 if (_retypepasswordTextController.text ==
                     _passwordTextController.text) {
                   try {
@@ -89,7 +90,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const SignInScreen()));
+                                builder: (context) => const AdminPage()));
+                      }).onError((error, stackTrace) {
+                        setState(() {
+                          errorMsg = "something wrong.";
+                        });
+                      });
+                    });
+                  } on FirebaseAuthException catch (e) {
+                    setState(() {
+                      errorMsg = "Invalid Username or Password";
+                    });
+                  }
+                } else {
+                  setState(() {
+                    errorMsg = "Password didn't match.";
+                  });
+                }
+              }),
+              firebaseUIButton(context, "Add Chef", () async {
+                if (_retypepasswordTextController.text ==
+                    _passwordTextController.text) {
+                  try {
+                    await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                            email: "chef_${_emailTextController.text}",
+                            password: _passwordTextController.text)
+                        .then((value) {
+                      fireStore.doc().set({
+                        'email': "chef_${_emailTextController.text}",
+                        'name': _userNameTextController.text,
+                      }).then((value) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AdminPage()));
                       }).onError((error, stackTrace) {
                         setState(() {
                           errorMsg = "something wrong.";

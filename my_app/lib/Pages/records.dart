@@ -1,13 +1,13 @@
 import 'package:my_app/packages.dart';
 
-class OrderPage extends StatefulWidget {
-  const OrderPage({super.key});
+class RecordsPage extends StatefulWidget {
+  const RecordsPage({super.key});
 
   @override
-  State<OrderPage> createState() => _OrderPageState();
+  State<RecordsPage> createState() => _RecordsPage();
 }
 
-class _OrderPageState extends State<OrderPage> {
+class _RecordsPage extends State<RecordsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,8 +25,9 @@ class _OrderPageState extends State<OrderPage> {
             child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.64,
               child: StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection('orders').snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection('allorders')
+                    .snapshots(),
                 builder:
                     ((context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                   if (!streamSnapshot.hasData) return const Text('Loading...');
@@ -144,25 +145,6 @@ class _OrderPageState extends State<OrderPage> {
                   );
                 }),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Column(
-              children: [
-                Container(
-                  child: Image.asset(
-                    "assets/images/qrscan.png",
-                    height: 170,
-                  ),
-                ),
-                firebaseUIButton(context, "Cash Payment", () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
-                }),
-              ],
             ),
           ),
 

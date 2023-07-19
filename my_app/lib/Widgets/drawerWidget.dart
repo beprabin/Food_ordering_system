@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:my_app/Pages/orderPage.dart';
+import 'package:my_app/Pages/records.dart';
 import 'package:my_app/packages.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -81,22 +82,20 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         ),
         ListTile(
           leading: Icon(
-            CupertinoIcons.cart,
+            Icons.info_outline_rounded,
             color: Colors.white,
           ),
           title: GestureDetector(
             onTap: () {
               setState(() {
                 FirebaseAuth.instance.signOut().then((value) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const OrderPage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => RecordsPage()));
                 });
               });
             },
             child: Text(
-              "Orders",
+              "Records",
               style: TextStyle(fontSize: 18, color: Colors.white),
             ),
           ),

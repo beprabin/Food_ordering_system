@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 //   ),
                 // ),
                 //Categories widget
-                CategoriesWidget(),
+                // CategoriesWidget(),
                 //Food Items
                 Center(
                   // padding: EdgeInsets.only(
@@ -63,7 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (context, index) {
                             final DocumentSnapshot documentSnapshot =
                                 streamSnapshot.data!.docs[index];
-                            return foodListWidget(context, documentSnapshot);
+                            return FoodListWidget(document: documentSnapshot);
+                            //return foodListWidget(context, documentSnapshot);
                           },
                         );
                       }),
@@ -109,9 +110,9 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Icon(
             CupertinoIcons.cart,
             size: 28,
-            color: Colors.white,
+            color: Colors.black,
           ),
-          backgroundColor: Colors.amber,
+          backgroundColor: Color.fromARGB(255, 215, 253, 0),
         ),
 
         //end cartpage
