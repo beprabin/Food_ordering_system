@@ -1,4 +1,3 @@
-import 'package:my_app/packages.dart';
 
 // class FoodListWidget extends StatefulWidget {
 //   final DocumentSnapshot? document;

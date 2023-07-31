@@ -1,6 +1,8 @@
 export 'package:dropdown_button2/dropdown_button2.dart';
 
 export 'package:my_app/Adminside/addfooditem.dart';
+export 'package:my_app/Adminside/editfooditems.dart';
+export 'package:my_app/Adminside/edituserdetails.dart';
 
 export 'package:my_app/screens/adminlanding_screen.dart';
 

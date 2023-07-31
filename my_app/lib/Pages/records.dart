@@ -1,4 +1,5 @@
 import 'package:my_app/packages.dart';
+import 'package:intl/intl.dart';
 
 class RecordsPage extends StatefulWidget {
   const RecordsPage({super.key});
@@ -8,12 +9,14 @@ class RecordsPage extends StatefulWidget {
 }
 
 class _RecordsPage extends State<RecordsPage> {
+  final DateFormat formatter = DateFormat('yyyy-MM-dd');
+  String? formatted;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Orders",
+            "Records",
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
@@ -68,55 +71,50 @@ class _RecordsPage extends State<RecordsPage> {
                                     ],
                                   ),
                                 ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text("Particular ",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                    Text("Quantity ",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                    Text("Price ",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
                                 Divider(
                                   color: Colors.black,
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                Column(
                                   children: [
-                                    Text("Items: ",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    Text("",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        )),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text("Items: ",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    Text("10",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        )),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text("Items: ",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    Text("10",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        )),
+                                    for (int i = 0;
+                                        i < document['name'].length;
+                                        i++)
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text("${document['name'][i]}",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              )),
+                                          Text("${document['plates'][i]}",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              )),
+                                          Text("${document['price'][i]}",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              )),
+                                        ],
+                                      ),
                                   ],
                                 ),
                                 Divider(
@@ -130,10 +128,48 @@ class _RecordsPage extends State<RecordsPage> {
                                         style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold)),
+                                    SizedBox(
+                                      width: 30,
+                                    ),
                                     Text("Rs. ${document['totalprice']}",
                                         style: TextStyle(
                                           fontSize: 16,
                                         )),
+                                  ],
+                                ),
+                                Divider(
+                                  color: Colors.black,
+                                ),
+                                SizedBox(
+                                  height: 40,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Ordered time: ${(document['time'])}",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                    SizedBox(
+                                      width: 30,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        "Handled by:  ${document['handled_by'].substring(
+                                          5,
+                                        )}",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                    SizedBox(
+                                      width: 30,
+                                    ),
                                   ],
                                 ),
                               ],
@@ -147,7 +183,6 @@ class _RecordsPage extends State<RecordsPage> {
               ),
             ),
           ),
-
           //over
         ]));
   }

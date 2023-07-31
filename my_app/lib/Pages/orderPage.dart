@@ -67,56 +67,57 @@ class _OrderPageState extends State<OrderPage> {
                                     ],
                                   ),
                                 ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text("Particular ",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                    Text("Quantity ",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                    Text("Price ",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
                                 Divider(
                                   color: Colors.black,
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                Divider(
+                                  color: Colors.black,
+                                ),
+                                Column(
                                   children: [
-                                    Text("Items: ",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    Text("",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        )),
+                                    for (int i = 0;
+                                        i < document['name'].length;
+                                        i++)
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text("${document['name'][i]}",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              )),
+                                          Text("${document['plates'][i]}",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              )),
+                                          Text("${document['price'][i]}",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              )),
+                                        ],
+                                      ),
                                   ],
                                 ),
                                 SizedBox(
                                   height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text("Items: ",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    Text("10",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        )),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text("Items: ",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    Text("10",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        )),
-                                  ],
                                 ),
                                 Divider(
                                   color: Colors.black,
@@ -129,6 +130,9 @@ class _OrderPageState extends State<OrderPage> {
                                         style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold)),
+                                    SizedBox(
+                                      width: 30,
+                                    ),
                                     Text("Rs. ${document['totalprice']}",
                                         style: TextStyle(
                                           fontSize: 16,

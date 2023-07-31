@@ -11,7 +11,12 @@ class AuthPage extends StatelessWidget {
         if (snapshot.hasData) {
           if (FirebaseAuth.instance.currentUser!.email.toString() ==
               "admin@gmail.com") {
-            return const AddFoodItem();
+            return const AdminPage();
+          } else if (FirebaseAuth.instance.currentUser!.email
+                  .toString()
+                  .substring(0, 5) ==
+              "chef_") {
+            return ChefLandingScreen();
           } else {
             return HomeScreen();
           }

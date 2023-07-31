@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:my_app/Pages/orderPage.dart';
 import 'package:my_app/Pages/records.dart';
 import 'package:my_app/packages.dart';
 
@@ -11,6 +10,7 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
+  String emails = FirebaseAuth.instance.currentUser!.email.toString();
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -23,6 +23,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 child: StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection('staff')
+                        .where('email', isEqualTo: emails)
                         .snapshots(),
                     builder: ((context,
                         AsyncSnapshot<QuerySnapshot> streamSnapshot) {

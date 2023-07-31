@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:my_app/packages.dart';
 
 class FoodlistforAdmin extends StatefulWidget {
@@ -13,18 +12,21 @@ class _FoodlistforAdminState extends State<FoodlistforAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.amber,
+        appBar: AppBar(
+          leading: const BackButton(
+            color: Colors.black, // <-- SEE HERE
+          ),
+          centerTitle: true,
+          title: Text(
+            "Food List",
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.black, // <-- SEE HERE
+          ),
+        ),
         body: SafeArea(
           child: ListView(
             children: [
-              SizedBox(
-                height: 10,
-              ),
-              Center(
-                child: Text(
-                  "Food List",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
-                ),
-              ),
               //cartlist items
               SingleChildScrollView(
                 child: SizedBox(
@@ -102,15 +104,20 @@ class _FoodlistforAdminState extends State<FoodlistforAdmin> {
                                       padding: const EdgeInsets.only(left: 24),
                                       child: GestureDetector(
                                         child: Icon(
-                                          Icons.edit_document,
+                                          Icons.edit,
                                           size: 32,
                                           color: Colors.white,
                                         ),
                                         onTap: () {
-                                          FirebaseFirestore.instance
-                                              .collection("Foods")
-                                              .doc(document.reference.id)
-                                              .delete();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditFoodItem(
+                                                        documentId: document
+                                                            .reference.id,
+                                                        document: document)),
+                                          );
                                         },
                                       ),
                                     ),

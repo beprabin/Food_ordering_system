@@ -1,9 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:my_app/packages.dart';
-import 'package:my_app/screens/sigin_screen.dart';
-import 'package:my_app/reusable_widgets/reusable_widgets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 // ignore_for_file: library_private_types_in_public_api, unused_catch_clause
 
@@ -32,11 +27,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: const Text(
-            "Sign Up",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          leading: const BackButton(
+            color: Colors.black, // <-- SEE HERE
+          ),
+          centerTitle: true,
+          title: Text(
+            "Sign up New User",
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.black, // <-- SEE HERE
           ),
         ),
         body: SingleChildScrollView(

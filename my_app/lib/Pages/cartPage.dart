@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:my_app/Pages/orderPage.dart';
 import 'package:my_app/packages.dart';
+import 'package:intl/intl.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -25,7 +26,11 @@ class _CartPageState extends State<CartPage> {
   // final _db = FirebaseFirestore.instance.collection("CartItems").doc();
   String? selectedValue;
   List<String> items = [];
+  List<int> qty = [];
+  List<int> price = [];
   int total = 0;
+  final DateFormat formatter = DateFormat('yyyy-MM-dd');
+  String? formatted;
   String table = "";
   @override
   Widget build(BuildContext context) {
@@ -150,6 +155,7 @@ class _CartPageState extends State<CartPage> {
                     ((context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                   if (!streamSnapshot.hasData) return const Text('Loading...');
                   items.clear();
+                  qty.clear();
                   total = 0;
                   return ListView.builder(
                     itemCount: streamSnapshot.data?.docs.length,
@@ -157,9 +163,11 @@ class _CartPageState extends State<CartPage> {
                       final DocumentSnapshot document =
                           streamSnapshot.data!.docs[index];
                       //print(streamSnapshot.data!.docs[index].reference);
-                      int qty = document['plates'];
+                      int qtyproduct = document['plates'];
                       items.add(document['name']);
-                      total += int.parse(document['price']) * qty;
+                      qty.add(document['plates']);
+                      price.add(int.parse(document['price']));
+                      total += int.parse(document['price']) * qtyproduct;
 
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -266,7 +274,10 @@ class _CartPageState extends State<CartPage> {
                                           .collection("CartItems")
                                           .doc(document.reference.id)
                                           .delete();
+                                      qty.removeAt(
+                                          items.indexOf("${document['name']}"));
                                       items.remove("${document['name']}");
+                                      price.remove("${document['price']}");
                                       total =
                                           total - int.parse(document['price']);
                                       FLAGS.remove(document['name']);
@@ -290,16 +301,38 @@ class _CartPageState extends State<CartPage> {
             child: firebaseUIButton(context, "Order", () async {
               if (table != "" && total != 0 && items.isNotEmpty) {
                 flag = true;
-                FirebaseFirestore.instance.collection('allorders').doc().set(
-                    {'name': items, 'totalprice': total, 'tablename': table});
+                formatted = DateFormat('yMMMMEEEEd').format(DateTime.now());
+                FirebaseFirestore.instance.collection('allorders').doc().set({
+                  'name': items,
+                  'plates': qty,
+                  'price': price,
+                  'totalprice': total,
+                  'tablename': table,
+                  'delivered_by': null,
+                  'time': formatted,
+                  'handled_by':
+                      FirebaseAuth.instance.currentUser!.email.toString(),
+                  'notified': 0
+                });
                 var coll = FirebaseFirestore.instance.collection('orders');
                 var snapshots = await coll.get();
+
                 for (var doc in snapshots.docs) {
                   await doc.reference.delete();
                 }
-                FirebaseFirestore.instance.collection('orders').doc().set(
-                    {'name': items, 'totalprice': total, 'tablename': table});
+                FirebaseFirestore.instance.collection('orders').doc().set({
+                  'name': items,
+                  'plates': qty,
+                  'price': price,
+                  'totalprice': total,
+                  'tablename': table,
+                  'time': formatted,
+                  'handled_by':
+                      FirebaseAuth.instance.currentUser!.email.toString()
+                });
                 items.clear();
+                qty.clear();
+                price.clear();
                 FLAGS.clear();
                 total = 0;
                 var collection =
@@ -320,6 +353,8 @@ class _CartPageState extends State<CartPage> {
             child: firebaseUIButton(context, "Reset", () async {
               // FirebaseFirestore.instance.collection('CartItems').delete();
               items.clear();
+              qty.clear();
+              price.clear();
               total = 0;
               FLAGS.clear();
               var collection =
